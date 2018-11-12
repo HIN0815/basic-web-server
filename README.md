@@ -1,4 +1,4 @@
-# labmonitor_collector
+# AWS-Final-Project
 
 ## IAM Setup ##
 
