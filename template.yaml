@@ -318,12 +318,16 @@ Resources:
               GroupId
 
 Outputs:
-  VPC:
-    Description: VPC
-    Value: !Ref VPC
-  AZ1:
-    Description: Availability Zone 1
-    Value: !GetAtt 
+  WebsiteURL:
+    Value:
+      Fn::Join:
+        - ""
+          - "http://"
+            Fn::GetAtt:
+              "ApplicationLoadBalancer"
+              "DNSName"
+            "/wordpress"
+    Description: "WordPress Website"
 
     
 
