@@ -3,7 +3,7 @@
 ## Cloud 9 Setup ##
 
 git clone https://github.com/HIN0815/WordPress.git  
-cd AWS-Final-Project/  
+cd WordPress/  
 chmod +x *.sh  
 ./setup.sh  
 
