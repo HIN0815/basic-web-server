@@ -1,17 +1,8 @@
-# AWS-Final-Project
-
-## IAM Setup ##
-
-go to IAM > Users > awsstudent 
-
-In the Permissions setting add new permissions policies call AdministratorAccess 
-
-Then delete other permissions without AdministratorAccess
-
+# AWS-WordPress
 
 ## Cloud 9 Setup ##
 
-git clone https://github.com/HIN0815/AWS-Final-Project.git  
+git clone https://github.com/HIN0815/WordPress.git  
 cd AWS-Final-Project/  
 chmod +x *.sh  
 ./setup.sh  
@@ -23,8 +14,6 @@ then use the
 . ./set_config.sh  
 command to set the config, not forget the first "."
 
-next edit the bucket name in deployment.sh line 3  
-(sourcebucket=my$STACK_NAME) edit my$STACK_NAME to your name or id, such as Anthony$STACK_NAME  
 after that you can run  
 ./deployment.sh  
-to deployment the final project
+to deployment the WordPress 
