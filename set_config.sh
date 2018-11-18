@@ -1,2 +1,2 @@
-export STACK_NAME=final-project
-export REGION=us-east-1
+export STACK_NAME=wordpress
+export REGION=ap-southeast-1
