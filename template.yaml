@@ -3,6 +3,7 @@ Description: Deploy basic wordpress
 
 Parameters: 
   KeyName:
+    Default: "intern"
     Description: "Name of an existing EC2 KeyPair to enable SSH access to the instances"
     Type: "AWS::EC2::KeyPair::KeyName"
     ConstraintDescription: "must be the name of an existing EC2 KeyPair."
@@ -23,7 +24,7 @@ Parameters:
     Type: "String"
     Default: "db.t2.micro"
   DBName:
-    Default: "wordpressdb"
+    Default: "interndb"
     Description: "The WordPress database name"
     Type: "String"
     MinLength: "1"
@@ -31,6 +32,7 @@ Parameters:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "must begin with a letter and contain only alphanumeric characters."
   DBUser:
+    Default: "intern"
     NoEcho: "true"
     Description: "The WordPress database admin account username"
     Type: "String"
@@ -39,6 +41,7 @@ Parameters:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "must begin with a letter and contain only alphanumeric characters."
   DBPassword:
+    Default: "intern123"
     NoEcho: "true"
     Description: "The WordPress database admin account password"
     Type: "String"
@@ -49,7 +52,7 @@ Parameters:
   MultiAZDatabase:
     Default: "false"
     Description: "Create a Multi-AZ MySQL Amazon RDS database instance"
-    Type": "String"
+    Type: "String"
     AllowedValues:
       - "true"
       - "false"
@@ -204,8 +207,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets: 
-        -  !Ref “PublicSubnet1”
-        -  !Ref “PublicSubnet2”
+        -  !Ref PublicSubnet1
+        -  !Ref PublicSubnet2
 
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -227,7 +230,7 @@ Resources:
       Port: 80
       Protocol: "HTTP"
       UnhealthyThresholdCount: 5
-      VpcId: !Ref Vpc   
+      VpcId: !Ref VPC   
       TargetGroupAttributes:
         - Key: "stickiness.enabled"
           Value: "true" 
@@ -245,20 +248,21 @@ Resources:
           FromPort: '80'
           ToPort: '80'
           SourceSecurityGroupId: 
-            Fn::Select: 0
-              !GetAtt ApplicationLoadBalancer.SecurityGroups
+            Fn::Select:
+            - 0
+            - !GetAtt ApplicationLoadBalancer.SecurityGroups
         - IpProtocol: tcp
           FromPort: '22'
           ToPort: '22'
           CidrIp: !Ref SSHLocation
-      VpcId: !Ref Vpc
+      VpcId: !Ref VPC
 
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties: 
       VPCZoneIdentifier: 
-        -  !Ref “PublicSubnet1”
-        -  !Ref “PublicSubnet2”
+        -  !Ref PublicSubnet1
+        -  !Ref PublicSubnet2
       LaunchConfigurationName: !Ref "LaunchConfig"
       MinSize: "1"
       MaxSize: "5"
@@ -373,7 +377,7 @@ Resources:
           - Fn::FindInMap: 
               - "AWSInstanceType2Arch"
               - !Ref "InstanceType"
-          - "Arch" 
+              - "Arch" 
       InstanceType: !Ref "InstanceType" 
       SecurityGroups" : 
         - !Ref "WebServerSecurityGroup"
@@ -409,7 +413,7 @@ Resources:
         FromPort: "3306"
         ToPort: "3306"
         SourceSecurityGroupId: !Ref "WebServerSecurityGroup"
-        VpcId: !Ref "Vpc"
+        VpcId: !Ref VPC
 
   DBInstance:
     Type: AWS::RDS::DBInstance
@@ -424,7 +428,7 @@ Resources:
       VPCSecurityGroups: 
         - Fn::GetAtt: 
             - DBEC2SecurityGroup 
-              GroupId
+            - GroupId
 
 Outputs:
   WebsiteURL:
