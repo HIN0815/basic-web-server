@@ -2,15 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy basic wordpress
 
 Parameters: 
-  KeyName:
-    Default: "intern"
-    Description: "Name of an existing EC2 KeyPair to enable SSH access to the instances"
-    Type: "AWS::EC2::KeyPair::KeyName"
-    ConstraintDescription: "must be the name of an existing EC2 KeyPair."
   InstanceType:
     Description: "WebServer EC2 instance type"
     Type: String
-    Default: “t2.micro”
+    Default: "t2.micro"
   SSHLocation:
     Description: "The IP address range that can be used to SSH to the EC2 instances"
     Type: "String"
@@ -32,7 +27,7 @@ Parameters:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "must begin with a letter and contain only alphanumeric characters."
   DBUser:
-    Default: "intern"
+    Default: "intern02"
     NoEcho: "true"
     Description: "The WordPress database admin account username"
     Type: "String"
@@ -74,7 +69,7 @@ Parameters:
   
 Mappings:
   AWSInstanceType2Arch:
-    "t2.micro": 
+    "t2.micro":
       "Arch" : "HVM64"
   AWSInstanceType2NATArch:
     "t2.micro": 
@@ -214,7 +209,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        Type: forward
+      - Type: forward
         TargetGroupArn: !Ref "ALBTargetGroup"
       LoadBalancerArn: !Ref "ApplicationLoadBalancer"
       Port: 80
@@ -355,7 +350,7 @@ Resources:
                     - !Ref "DBPassword" 
                     - "'/g\" wp-config.php\n"
                     - "sed -i \"s/'localhost'/'"
-                    - !GetAtt DBInstance.Endpoint.Address
+                    - !GetAtt WPDBInstance.Endpoint.Address
                     - "'/g\" wp-config.php\n"
               "mode" : "000500"
               "owner" : "root"
@@ -379,9 +374,8 @@ Resources:
               - !Ref "InstanceType"
               - "Arch" 
       InstanceType: !Ref "InstanceType" 
-      SecurityGroups" : 
+      SecurityGroups: 
         - !Ref "WebServerSecurityGroup"
-      KeyName: !Ref "KeyName"
       UserData:
         Fn::Base64:
           !Join
@@ -404,7 +398,7 @@ Resources:
               - !Ref "AWS::Region"
               - "\n"
 
-  DBEC2SecurityGroup:
+  WPDBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: "Open database for access"
@@ -413,9 +407,17 @@ Resources:
         FromPort: "3306"
         ToPort: "3306"
         SourceSecurityGroupId: !Ref "WebServerSecurityGroup"
-        VpcId: !Ref VPC
+      VpcId: !Ref VPC
+      
+  DBSubnetGroup: 
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: "WPDB Subnet"
+      SubnetIds: 
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
 
-  DBInstance:
+  WPDBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: !Ref DBName
@@ -425,9 +427,10 @@ Resources:
       MasterUserPassword: !Ref "DBPassword" 
       DBInstanceClass: !Ref "DBClass" 
       AllocatedStorage: !Ref "DBAllocatedStorage" 
+      DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups: 
         - Fn::GetAtt: 
-            - DBEC2SecurityGroup 
+            - WPDBSecurityGroup 
             - GroupId
 
 Outputs:
