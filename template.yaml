@@ -19,7 +19,7 @@ Parameters:
     Type: "String"
     Default: "db.t2.micro"
   DBName:
-    Default: "interndb-web"
+    Default: "interndbweb"
     Description: "The RDS name"
     Type: "String"
     MinLength: "1"
