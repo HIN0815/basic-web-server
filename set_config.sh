@@ -1,2 +1,2 @@
-export STACK_NAME=wordpress
+export STACK_NAME=web
 export REGION=ap-southeast-1
