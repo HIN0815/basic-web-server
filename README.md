@@ -1,9 +1,9 @@
-# AWS-WordPress
+# Basic Web Server
 
 ## Cloud 9 Setup ##
 
-git clone https://github.com/HIN0815/WordPress.git  
-cd WordPress/  
+git clone https://github.com/HIN0815/basic-web-server.git  
+cd basic-web-server/  
 chmod +x *.sh  
 ./setup.sh  
 
@@ -16,4 +16,4 @@ command to set the config, not forget the first "."
 
 after that you can run  
 ./deployment.sh  
-to deployment the WordPress 
+to deployment the Basic Web Server 
