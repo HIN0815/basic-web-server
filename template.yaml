@@ -274,7 +274,7 @@ Resources:
         Fn::Base64: "80"
       InstanceType: !Ref "InstanceType"
       SecurityGroups: 
-        - !Ref "WebInstanceSecurityGroup"
+        - !Ref "InstanceSecurityGroup"
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
