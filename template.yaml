@@ -288,16 +288,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: "80"
           ToPort: "80"
-          SourceSecurityGroupId: !Ref WebLoadBalancerSecurityGroup
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
         - IpProtocol: tcp
           FromPort: "443"
           ToPort: "443"
-          SourceSecurityGroupId: !Ref WebLoadBalancerSecurityGroup
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: "3306"
-          ToPort: "3306"
-          SourceSecurityGroupId: !Ref InstanceSecurityGroup
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
       
   DBSubnetGroup: 
     Type: AWS::RDS::DBSubnetGroup
