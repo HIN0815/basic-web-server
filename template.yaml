@@ -210,6 +210,7 @@ Resources:
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupDescription: Open LB to ec2 and public      
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -279,6 +280,7 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupDescription: Open ec2 to LB and public
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -319,6 +321,7 @@ Resources:
   RDSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupDescription: Open database to ec2
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
